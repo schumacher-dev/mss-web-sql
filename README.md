@@ -1,24 +1,90 @@
 # MssWebSql
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.0.
+## Usage
 
-## Code scaffolding
+###  Add MssWebsqlModule on your Angular project
 
-Run `ng generate component component-name --project mss-web-sql` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project mss-web-sql`.
-> Note: Don't forget to add `--project mss-web-sql` or else it will be added to the default project in your `angular.json` file. 
+```typescript
+@NgModule({
+    ...
+    imports: [
+        MssWebsqlModule
+    ]
+})
+export class AppModule { }
+```
 
-## Build
+---
+### Create your migration
+```typescript
+export class TesteMigration implements ISQLMigration {
+    id: string = 'teste'; // Migration Identification
+    description: string = 'Table for test';
+    order: number = 10; // Execution order
+    
+    resolveDo(): string {
+        return `
+            CREATE TABLE "Teste" (
+                "Id" INT UNIQUE, 
+                "Name" VARCHAR, 
+                "CreatedAt" TIMESTAMP
+            );
+        `;
+    }
 
-Run `ng build mss-web-sql` to build the project. The build artifacts will be stored in the `dist/` directory.
+    resolveUndo(): string {
+        return `
+            DROP TABLE "Teste";
+        `;
+    }
 
-## Publishing
+}
+```
+---
+## Add service in your component
+```typescript
+@Component({
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss']
+})
+export class AppComponent {
+    title = 'test-mss-websql';
 
-After building your library with `ng build mss-web-sql`, go to the dist folder `cd dist/mss-web-sql` and run `npm publish`.
+    constructor(
+        private webSql: MssWebsqlService,
+        private webSqlMigrations: MssWebsqlMigrationsService
+    ) {
 
-## Running unit tests
+    }
 
-Run `ng test mss-web-sql` to execute the unit tests via [Karma](https://karma-runner.github.io).
+    async ngOnInit() {
+        // Initialize Database
+        await this.webSql.init('TestMssWebSqlMigrations', '1.0', 'teste');
 
-## Further help
+        // Initialize Migrations Management Service
+        await this.webSqlMigrations.init();
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+        // Add your migration to Migrations Service
+        await this.webSqlMigrations.addMigrations([
+            new TesteMigration()
+        ]);
+    }
+}
+````
+
+---
+## Other utilities
+```typescript
+    // This method can be used to run one SQL command
+    await this.webSql.execute('SELECT * FROM User WHERE Email = $1', ['test@email.com']);
+
+    // This method can be used to run many SQL commands with a transaction
+    await this.webSql.transaction([
+        'YOUR SQL 1',
+        'YOUR SQL 2',
+        'YOUR SQL 3',
+        ...
+    ]);
+````
+
