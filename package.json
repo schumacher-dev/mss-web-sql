@@ -1,6 +1,13 @@
 {
   "name": "mss-web-sql",
+  "description": "Angular library to manage database migrations using WebSQL",
   "version": "0.0.1",
+  "keywords": "db, database, migrations, sql, websql, angular, module, service",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/schumacher-dev/mss-web-sql"
+  },
+  "author": "Matheus Schafer Schumacher",
   "peerDependencies": {
     "@angular/common": "^14.2.0",
     "@angular/core": "^14.2.0"

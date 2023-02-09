@@ -1,5 +1,24 @@
 # MssWebSql
 
+## Description
+This project is an Angular library to manage database migrations using WebSQL in browser. You can create and organize your dababase migrations with intuitive way usign typescript classes.
+
+Available commands:
+ - MssWebsqlMigrationsService
+    - init = Initialize the migrations management system
+    - doAllMigrations = Do all migrations
+    - undoAllMigrations = Undo all migrations
+    - doMigrations = Do migrations with specific amount
+    - undoMigrations = Undo migrations with specific amount
+    - runMigrations = Do or Undo specific migrations
+    - addMigrations = Add migrations to manage
+ - MssWebsqlService
+    - init = Initialize the database
+    - checkTableExist = Check if an table existe (not default in websql)
+    - execute = Execute an SQL command
+    - transaction = Execute many SQL commands inside the transaction
+    - transactionFn = Allow the transaction usign callback strategy
+
 ## Usage
 
 ###  Add MssWebsqlModule on your Angular project

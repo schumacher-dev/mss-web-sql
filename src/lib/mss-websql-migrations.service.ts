@@ -23,7 +23,6 @@ export class MssWebsqlMigrationsService {
         let dbMigrations = await this.getDbMigrations();
         this.isNewVersion = await this.checkIsNewVersion();
 
-        console.log('sync: IS NEW VERSION', this.isNewVersion)
         if (!this.isNewVersion) return;
 
         // REMOVE DATABASE MIGRATIONS
@@ -149,7 +148,7 @@ export class MssWebsqlMigrationsService {
             console.log('\n');
             return true;
         } catch (error: any) {
-            console.log('RUN MIGRATIONS ERROR', error);
+            console.error('RUN MIGRATIONS ERROR', error);
             throw new Error(error.message);
         }
     }
