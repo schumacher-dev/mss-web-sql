@@ -100,10 +100,21 @@ export class AppComponent {
 
     // This method can be used to run many SQL commands with a transaction
     await this.webSql.transaction([
-        'YOUR SQL 1',
-        'YOUR SQL 2',
-        'YOUR SQL 3',
+        {
+            query: 'YOUR SQL 1',
+            binds: []
+        },
+        {
+            query: 'YOUR SQL 2',
+            binds: []
+        },
         ...
     ]);
+
+    // You can use transactions with callback strategy
+    await this.webSql.transactionFn(async transaction => {
+        await this.webSql.execute(
+            'YOUR QUERY HERE', [... your binds], transaction);
+    });
 ````
 

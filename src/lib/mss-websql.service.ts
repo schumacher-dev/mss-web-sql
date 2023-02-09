@@ -36,17 +36,22 @@ export class MssWebsqlService {
         return (result.rows.length == 0) ? false : true;
     }
 
-    async execute<T = any>(sqlQuery: string, binds?: Array<any> | Array<Array<any>>): Promise<SQLResultSet<T>> {
+    async newTransaction() {
         return new Promise((resolve, reject) => {
             this.dbInstance.transaction(async (transaction: SQLTransaction) => {
-                try {
-                    let result = await this.run<T>(new SqlCommand(sqlQuery, binds), transaction);
-                    resolve(result);
-                } catch (error) {
-                    reject(error);
-                }
+                resolve(transaction);
             });
         });
+    }
+
+    async execute<T = any>(sqlQuery: string, binds?: Array<any> | Array<Array<any>>, transaction: SQLTransaction = null): Promise<SQLResultSet<T>> {
+        if (!transaction) transaction = await this.newTransaction();
+        try {
+            let result = await this.run<T>(new SqlCommand(sqlQuery, binds), transaction);
+            return result;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async transaction(sqlCommands: Array<SqlCommand>): Promise<Array<SQLResultSet<any>>> {
